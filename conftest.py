@@ -7,15 +7,8 @@ from config import get_header, get_url
 
 load_dotenv()
 
-@pytest.fixture(scope="session")
-def browser_context_args():
-    return {
-        "base_url": os.getenv("TEST_BASE_URL")
-    }
-
-
 @pytest.fixture(scope="module")
-def auth_context(browser: Browser) -> BrowserContext:
+def authenticated_context(browser: Browser) -> BrowserContext:
     STORAGE_STATE_PATH = os.getenv("STORAGE_STATE_PATH") 
     
     if os.path.exists(STORAGE_STATE_PATH):
@@ -36,15 +29,15 @@ def auth_context(browser: Browser) -> BrowserContext:
         page.fill('input[name="username"]', os.getenv("TEST_USERNAME"))
         page.fill('input[name="password"]', os.getenv("TEST_PASSWORD"))
         page.click('button[type="submit"]')
-                
+        
         # Save authentication state to JSON file
-        context.storage_state(path=STORAGE_STATE_PATH)
+        context.storage_state(path=STORAGE_STATE_PATH)       
 
     yield context
     context.close()
 
 @pytest.fixture
-def page(auth_context: BrowserContext) -> Page:
-    page = auth_context.new_page()
+def page(authenticated_context: BrowserContext) -> Page:
+    page = authenticated_context.new_page()
     yield page
     page.close()
