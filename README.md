@@ -1,47 +1,53 @@
 # Playwright Python Login Demo
-Login and validate portfolio using the Playwright Pytest framework.
+Login and validate portfolio amount using the [Playwright Pytest framework](https://playwright.dev/python/docs/intro).
 
-## Setup
+# Known Issues / Notes
+ - "Device Approval" via email is requred during the first run:
+    1. On first execution, the test will pause and wait for you to approve the device via email.
+    2. After approval, the test will continue and pass.
+    3. Subsequent runs will utilize the stored session and should not require device approval.
 
-1. Using the example `env_example` file, create a `.env` file and customize the values.
+# Setup
+
+> All commands from root of project:
+
+1. Using the example `env_example` file, create a `.env` file
     ```bash
-    $ cp env_example .env
+    cp env_example .env
     ```
+2. Customize the `.env` file with your own credentials, base_url and portfolio value.
 
 
-All commands from root of project:
-1. Activate venv
-    > Its a good idea to install a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) to isolate packages from your global python installation.
+1. Activate [Virtual Environment (venv)](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
     ```bash
-    $ python3 -m venv .qa
+    # Its a good idea to install a venv to isolate packages from your global python installation but this is not necessary on most machines.
+
+    python3 -m venv .qa
     
-    $ source .qa/bin/activate
+    source .qa/bin/activate
     ```
 
 1. Install dependencies to the now active .qa venv
     ```bash
-    $ pip install -r requirements.txt
+    pip install -r requirements.txt
     ```
     
-1. Run tests
+# Run tests
 
-    ```bash
-    pytest
+```bash
+pytest --vv test_portfolio.py --headed
 
-    ```
+# If you want to run with debugger/inspector    
+PWDEBUG=1 pytest -s test_portfolio.py --headed
+```
 
-1. If you get the follwing error, run `playwright install` as instructed.
-    ```bash
-    E           ║ Looks like Playwright was just installed or updated.       ║
-    E           ║ Please run the following command to download new browsers: ║
-    E           ║                                                            ║
-    E           ║     playwright install    
-    ```
 
-# Known Issues
- - Device Approval always requred due to playwright test isolation, the app thinks its a new device and sends an email for approval.
- - A workaround is to first run with: `PWDEBUG=1 pytest -s`, stepping through the playwright debugger and
-   leaving the window open while you go check email, and approve device. This saves full state in storage_state.json
-   and the debugger will login after approval and test will pass.
-   Howver, subsequent runs that use the stored session are still returning as expired and I don't know why.        
+If you get the follwing error, run `playwright install` as instructed.
+
+```bash
+E           ║ Looks like Playwright was just installed or updated.       ║
+E           ║ Please run the following command to download new browsers: ║
+E           ║                                                            ║
+E           ║     playwright install    
+```
