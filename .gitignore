@@ -1,3 +1,6 @@
 /.pytest_cache/
 /.env
 .env.*
+/.pytest_cache/
+/.vscode/
+storage_state.json

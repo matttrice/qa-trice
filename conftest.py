@@ -3,7 +3,7 @@ import os
 from playwright.sync_api import Page, expect, Browser, BrowserContext
 from dotenv import load_dotenv
 
-from config import get_header
+from config import get_header, get_url
 
 load_dotenv()
 
@@ -14,35 +14,41 @@ def browser_context_args():
     }
 
 
-@pytest.fixture(scope="module")
+#@pytest.fixture(scope="module")
 def auth_context(browser: Browser) -> BrowserContext:
-    context = browser.new_context(
-        base_url=os.getenv("TEST_BASE_URL")
-    )
-    page = context.new_page()
     
-    page.goto(os.getenv("TEST_LOCALE")+"/sign-in")
-    # Ensure the navigation bar is visible
-    expect(page.get_by_role("navigation").get_by_role("link").first).to_be_visible()
-    
-    page.fill('input[name="username"]', os.getenv("TEST_USERNAME"))
-    page.fill('input[name="password"]', os.getenv("TEST_PASSWORD"))
-    page.click('button[type="submit"]')
-    
-    # Validate authenticated page
+    if os.path.exists(STORAGE_STATE_PATH):
+        context = browser.new_context(
+            base_url=os.getenv("TEST_BASE_URL"),
+            storage_state=STORAGE_STATE_PATH,
+        )
+        page = context.new_page()
+        page.goto(get_url("home"))
+    else:
+        context = browser.new_context(
+            base_url=os.getenv("TEST_BASE_URL"),
+        )
+        page = context.new_page()
+        
+        page.goto(os.getenv("TEST_LOCALE") + "/sign-in")
+        # Ensure the navigation bar is visible
+        expect(page.get_by_role("navigation").get_by_role("link").first).to_be_visible()
+
+        page.fill('input[name="username"]', os.getenv("TEST_USERNAME"))
+        page.fill('input[name="password"]', os.getenv("TEST_PASSWORD"))
+        page.click('button[type="submit"]')
+                
+        # Save authentication state to JSON file
+        context.storage_state(path=STORAGE_STATE_PATH)
+        context.close()
+
+    # Validate authenticated page loaded
     expect(page.get_by_role("button", name=get_header("buy_crypto"))).to_be_visible()
     
-    storage_state = context.storage_state()
-    
-    authenticated_context = browser.new_context(
-        storage_state=storage_state,
-        base_url=os.getenv("TEST_BASE_URL")
-    )
-    
-    yield authenticated_context
-    authenticated_context.close()
+    yield context
+    context.close()
 
-@pytest.fixture
+#@pytest.fixture
 def page(auth_context: BrowserContext) -> Page:
     page = auth_context.new_page()
     yield page
