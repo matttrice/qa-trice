@@ -1,5 +1,6 @@
 import pytest
 import os
+import logging
 from playwright.sync_api import sync_playwright, Page, expect, BrowserContext
 from dotenv import load_dotenv
 
@@ -9,6 +10,8 @@ load_dotenv()
 
 STORAGE_STATE_PATH = os.getenv("STORAGE_STATE_PATH")
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
 def authenticated_context(browser_name) -> BrowserContext:
@@ -38,13 +41,17 @@ def authenticated_context(browser_name) -> BrowserContext:
         
        # Before the test has a stored storage state, we need device approval via email
         if not os.path.exists(STORAGE_STATE_PATH):
-            expect(page.locator('p[role="alert"]', has_text="Approve new device")).to_be_visible()
-            print("Storage State needs to be saved. Waiting for you to check email. Pausing for manual intervention...")
-            page.pause()
+            approve_device_alert = page.locator('p[role="alert"]', has_text="Approve new device")
+            expect(approve_device_alert).to_be_visible()
+            logger.warning("Storage State needs to be saved. Waiting for you to check email.")
+
+            # Wait for the "Approve new device" message to disappear
+            while approve_device_alert.is_visible():
+                page.wait_for_timeout(1000)
 
         expect(page.locator("button").filter(has_text=get_header("buy_crypto"))).to_be_visible()  
         
-        # Save authentication state to JSON file
+        # Save/update authentication state to JSON file
         context.storage_state(path=STORAGE_STATE_PATH)
         
         yield context
