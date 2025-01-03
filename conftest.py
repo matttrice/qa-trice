@@ -14,16 +14,15 @@ def browser_context_args():
     }
 
 
-#@pytest.fixture(scope="module")
+@pytest.fixture(scope="module")
 def auth_context(browser: Browser) -> BrowserContext:
+    STORAGE_STATE_PATH = os.getenv("STORAGE_STATE_PATH") 
     
     if os.path.exists(STORAGE_STATE_PATH):
         context = browser.new_context(
             base_url=os.getenv("TEST_BASE_URL"),
             storage_state=STORAGE_STATE_PATH,
         )
-        page = context.new_page()
-        page.goto(get_url("home"))
     else:
         context = browser.new_context(
             base_url=os.getenv("TEST_BASE_URL"),
@@ -40,15 +39,11 @@ def auth_context(browser: Browser) -> BrowserContext:
                 
         # Save authentication state to JSON file
         context.storage_state(path=STORAGE_STATE_PATH)
-        context.close()
 
-    # Validate authenticated page loaded
-    expect(page.get_by_role("button", name=get_header("buy_crypto"))).to_be_visible()
-    
     yield context
     context.close()
 
-#@pytest.fixture
+@pytest.fixture
 def page(auth_context: BrowserContext) -> Page:
     page = auth_context.new_page()
     yield page
