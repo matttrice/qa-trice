@@ -1,5 +1,5 @@
 # Playwright Python Login Demo
-Login and validate portfolio.
+Login and validate portfolio using the Playwright Pytest framework.
 
 ## Setup
 All commands from root of project:
