@@ -17,13 +17,19 @@ Login and validate portfolio amount using the [Playwright Pytest framework](http
     ```
 2. Customize the `.env` file with your own credentials, base_url and portfolio value.
 
+   - Ensure there are no leading or trailing spaces around the = sign in the .env file
+   - To later run with different parameteres, modify the `.env` file and re-source it:
+        ```bash
+        . .env
+        ```
+
 
 1. Activate [Virtual Environment (venv)](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
     This step is optional but it is recommended to create a venv to isolate packages from your global python installation.
 
     ```bash
-    
+
     python3 -m venv .qa
     
     source .qa/bin/activate

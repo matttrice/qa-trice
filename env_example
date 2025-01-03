@@ -1,7 +1,7 @@
 TEST_LOCALE=en-us
-TEST_BASE_URL=
+TEST_BASE_URL=<your-value>
 TEST_APP_ENV=consumer
-TEST_USERNAME=
-TEST_PASSWORD=
-TEST_PORTFOLIO_VALUE="0.00"
-STORAGE_STATE_PATH = storage_state.json
+TEST_USERNAME=<your-value>
+TEST_PASSWORD=<your-value>
+TEST_PORTFOLIO_VALUE=<your-value>
+STORAGE_STATE_PATH=storage_state.json
