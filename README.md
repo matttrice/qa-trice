@@ -20,15 +20,16 @@ Login and validate portfolio amount using the [Playwright Pytest framework](http
 
 1. Activate [Virtual Environment (venv)](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
-    ```bash
-    # Its a good idea to install a venv to isolate packages from your global python installation but this is not necessary on most machines.
+    This step is optional but it is recommended to create a venv to isolate packages from your global python installation.
 
+    ```bash
+    
     python3 -m venv .qa
     
     source .qa/bin/activate
     ```
 
-1. Install dependencies to the now active .qa venv
+1. Install dependencies
     ```bash
     pip install -r requirements.txt
     ```
