@@ -22,7 +22,9 @@ def auth_context(browser: Browser) -> BrowserContext:
     page = context.new_page()
     
     page.goto(os.getenv("TEST_LOCALE")+"/sign-in")
-
+    # Ensure the navigation bar is visible
+    expect(page.get_by_role("navigation").get_by_role("link").first).to_be_visible()
+    
     page.fill('input[name="username"]', os.getenv("TEST_USERNAME"))
     page.fill('input[name="password"]', os.getenv("TEST_PASSWORD"))
     page.click('button[type="submit"]')
