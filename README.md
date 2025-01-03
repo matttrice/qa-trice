@@ -36,12 +36,22 @@ Login and validate portfolio amount using the [Playwright Pytest framework](http
 # Run tests
 
 ```bash
-pytest --vv test_portfolio.py --headed
+# First run you should see: WARNING:conftest:Storage State needs to be saved. Waiting for you to check email.
+# Script will wait for you to approve the device via email.
+pytest -vv -s test_portfolio.py --headed
 
 # If you want to run with debugger/inspector    
 PWDEBUG=1 pytest -s test_portfolio.py --headed
 ```
 
+### Run with other browers (Default is chromium)
+```bash
+# add --browser=[firefox|webkit] to the command
+pytest -vv -s test_portfolio.py --headed --browser=firefox
+```
+
+
+# Troubleshooting
 
 If you get the follwing error, run `playwright install` as instructed.
 
@@ -51,3 +61,8 @@ E           ║ Please run the following command to download new browsers: ║
 E           ║                                                            ║
 E           ║     playwright install    
 ```
+
+# Expected Output
+<a href="expected_output.png">
+    <img src="expected_output.png" alt="Expected Output" width="600"/>
+</a>
